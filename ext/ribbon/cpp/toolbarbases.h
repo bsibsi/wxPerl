@@ -38,8 +38,8 @@ class wxRibbonToolBarToolBase
 {
 public:
     wxString help_string;
-    wxBitmap bitmap;
-    wxBitmap bitmap_disabled;
+    wxBitmapBundle bitmap;
+    wxBitmapBundle bitmap_disabled;
     wxRect dropdown;
     wxPoint position;
     wxSize size;

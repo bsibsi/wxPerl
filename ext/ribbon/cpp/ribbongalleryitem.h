@@ -26,8 +26,9 @@ public:
     }
 
     void SetId(int id) {m_id = id;}
-    void SetBitmap(const wxBitmap& bitmap) {m_bitmap = bitmap;}
-    const wxBitmap& GetBitmap() const {return m_bitmap;}
+    void SetBitmap(const wxBitmapBundle& bitmap) {m_bitmap = bitmap;}
+    const wxBitmapBundle& GetBitmapBundle() const {return m_bitmap;}
+    wxBitmap GetBitmap(wxWindow* wnd) const {return m_bitmap.GetBitmapFor(wnd);}
     void SetIsVisible(bool visible) {m_is_visible = visible;}
     void SetPosition(int x, int y, const wxSize& size)
     {
@@ -42,7 +43,7 @@ public:
     void *GetClientData() const {return m_client_data.GetClientData();}
 
 protected:
-    wxBitmap m_bitmap;
+    wxBitmapBundle m_bitmap;
     wxClientDataContainer m_client_data;
     wxRect m_position;
     int m_id;

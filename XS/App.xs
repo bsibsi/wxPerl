@@ -323,7 +323,21 @@ wxApp::SafeYieldFor( win, eventsToProcess );
 bool
 wxApp::SetNativeTheme( theme )
     wxString theme
-    
+
+#if WXPERL_W_VERSION_GE( 3, 3, 0 )
+
+int
+wxApp::SetAppearance( appearance )
+    int appearance
+  CODE:
+    // appearance: Wx::wxAPPEARANCE_SYSTEM/_LIGHT/_DARK
+    // RETVAL: Wx::wxAPPEARANCE_RESULT_FAILURE/_OK/_CANNOT_CHANGE
+    RETVAL = (int) THIS->SetAppearance( (wxApp::Appearance) appearance );
+  OUTPUT:
+    RETVAL
+
+#endif
+
 #if defined(__WXOSX_COCOA__)
 
 void

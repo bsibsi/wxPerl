@@ -19,6 +19,7 @@
 #endif
 
 #include <wx/defs.h>
+#include <wx/app.h>
 
 #include <wx/filedlg.h>
 #include <wx/colordlg.h>
@@ -134,6 +135,19 @@
 #define wxNavigateForward   wxNavigationKeyEvent::IsForward
 #define wxNavigateWinChange wxNavigationKeyEvent::WinChange
 #define wxNavigateFromTab   wxNavigationKeyEvent::FromTab
+
+#if wxCHECK_VERSION( 3, 3, 0 )
+// wxApp::Appearance / wxApp::AppearanceResult are C++11 scoped enums (added
+// in wx 3.3 for wxApp::SetAppearance()); alias them to flat, non-scoped
+// names so they can be returned from constant() (which returns a plain
+// double and cannot implicitly convert a scoped enum).
+#define wxAPPEARANCE_SYSTEM               ( (int) wxApp::Appearance::System )
+#define wxAPPEARANCE_LIGHT                ( (int) wxApp::Appearance::Light )
+#define wxAPPEARANCE_DARK                 ( (int) wxApp::Appearance::Dark )
+#define wxAPPEARANCE_RESULT_FAILURE       ( (int) wxApp::AppearanceResult::Failure )
+#define wxAPPEARANCE_RESULT_OK            ( (int) wxApp::AppearanceResult::Ok )
+#define wxAPPEARANCE_RESULT_CANNOT_CHANGE ( (int) wxApp::AppearanceResult::CannotChange )
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 // implementation for wxPlConstantsModule OnInit/OnExit
@@ -691,6 +705,15 @@ static double constant( const char* name, int arg )
     r( wxANIMATION_TYPE_INVALID );      // animation
     r( wxAC_DEFAULT_STYLE );            // animationctrl
     r( wxAC_NO_AUTORESIZE );            // animationctrl
+
+#if wxCHECK_VERSION( 3, 3, 0 )
+    r( wxAPPEARANCE_SYSTEM );               // app
+    r( wxAPPEARANCE_LIGHT );                // app
+    r( wxAPPEARANCE_DARK );                 // app
+    r( wxAPPEARANCE_RESULT_FAILURE );       // app
+    r( wxAPPEARANCE_RESULT_OK );            // app
+    r( wxAPPEARANCE_RESULT_CANNOT_CHANGE ); // app
+#endif
     break;
   case 'B':
     r( wxBATTERY_NORMAL_STATE );        // power

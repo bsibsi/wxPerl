@@ -338,12 +338,25 @@ SelectLightDark( wxColour colForLight, wxColour colForDark )
   
 MODULE=Wx PACKAGE=Wx::SystemAppearance
 
+wxString
+wxSystemAppearance::GetName()
+
 bool
 wxSystemAppearance::IsDark()
-      
+
 bool
 wxSystemAppearance::IsUsingDarkBackground()
-      
+
+#if wxCHECK_VERSION( 3, 3, 0 )
+
+bool
+wxSystemAppearance::AreAppsDark()
+
+bool
+wxSystemAppearance::IsSystemDark()
+
+#endif
+
 MODULE=Wx PACKAGE=Wx::TipProvider
 
 wxTipProvider*

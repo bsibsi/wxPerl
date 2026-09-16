@@ -30,8 +30,8 @@
 public:
     /* standard style method names */
     wxString  GetHelpString() %code{% RETVAL = THIS->help_string; %};
-    wxBitmap* GetBitmap() %code{% RETVAL = new wxBitmap(THIS->bitmap); %};
-    wxBitmap* GetBitmapDisabled() %code{% RETVAL = new wxBitmap(THIS->bitmap_disabled); %};
+    wxBitmap* GetBitmap() %code{% RETVAL = new wxBitmap(THIS->bitmap.GetBitmap(THIS->bitmap.GetDefaultSize())); %};
+    wxBitmap* GetBitmapDisabled() %code{% RETVAL = new wxBitmap(THIS->bitmap_disabled.GetBitmap(THIS->bitmap_disabled.GetDefaultSize())); %};
     wxRect*   GetDropDown() %code{% RETVAL = new wxRect(THIS->dropdown); %};
     wxPoint*  GetPosition() %code{% RETVAL = new wxPoint(THIS->position); %};
     wxSize*   GetSize() %code{% RETVAL = new wxSize(THIS->size); %};
@@ -51,8 +51,8 @@ public:
     /* documented ??? names */
     
     wxString  help_string() %code{% RETVAL = THIS->help_string; %};
-    wxBitmap* bitmap() %code{% RETVAL = new wxBitmap(THIS->bitmap); %};
-    wxBitmap* bitmap_disabled() %code{% RETVAL = new wxBitmap(THIS->bitmap_disabled); %};
+    wxBitmap* bitmap() %code{% RETVAL = new wxBitmap(THIS->bitmap.GetBitmap(THIS->bitmap.GetDefaultSize())); %};
+    wxBitmap* bitmap_disabled() %code{% RETVAL = new wxBitmap(THIS->bitmap_disabled.GetBitmap(THIS->bitmap_disabled.GetDefaultSize())); %};
     wxRect*   dropdown() %code{% RETVAL = new wxRect(THIS->dropdown); %};
     wxPoint*  position() %code{% RETVAL = new wxPoint(THIS->position); %};
     wxSize*   size() %code{% RETVAL = new wxSize(THIS->size); %};

@@ -131,8 +131,8 @@ public:
         %code%{  wxPli_thread_sv_unregister( aTHX_ "Wx::RibbonGalleryItem", THIS, ST(0) );  %};
 
     void SetId(int id);
-    void SetBitmap(const wxBitmap& bitmap);
-    const wxBitmap& GetBitmap() const;
+    void SetBitmap(const wxBitmapBundle& bitmap);
+    wxBitmap GetBitmap(wxWindow* wnd) const;
     void SetIsVisible(bool visible);
     void SetPosition(int x, int y, const wxSize& size);
     bool IsVisible() const;
