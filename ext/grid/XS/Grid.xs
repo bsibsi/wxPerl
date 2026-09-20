@@ -685,6 +685,15 @@ bool
 wxGrid::IsSelection()
 
 bool
+wxGrid::UsesOverlaySelection()
+
+void
+wxGrid::DisableOverlaySelection()
+
+void
+wxGrid::EnableOverlaySelection()
+
+bool
 wxGrid::IsVisibleXY( row, col, wholeCellVisible = true )
     int row
     int col

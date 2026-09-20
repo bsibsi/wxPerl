@@ -39,6 +39,35 @@ MODULE=Wx_Evt PACKAGE=Wx
 
 INCLUDE: XS/EvtHandler.xs
 
+MODULE=Wx_Evt PACKAGE=Wx PREFIX=wx
+
+# wxQueueEvent() (unlike wxPostEvent(), see XS/App.xs) takes ownership of a
+# heap-allocated event and deletes it itself once dispatched, instead of
+# cloning it - this is what makes it safe to use across threads even for
+# events whose data would otherwise share a non-atomically-refcounted buffer
+# (see wx/event.h's own wxPostEvent()/wxQueueEvent() doc comments). Since
+# ownership passes to wx here, the Perl-side wrapper must stop believing it
+# owns the C++ object too, or its own DESTROY would delete it a second time
+# once wx is done with it - hence set_deleteable(false), the same call
+# wxWindow::SetDropTarget() (Window.xs) uses for its own ownership transfer.
+# Unlike SetDropTarget, deliberately no SvREFCNT_inc here: this fires on
+# every posted event (every background DB result, every CMH keepalive/log
+# tick), not once per window, so pinning the wrapper forever would leak
+# without bound. It isn't needed either - wxPlThreadEvent::DESTROY (below)
+# checks the deleteable flag before deleting, so it's harmless if it runs
+# before wx has dispatched the event; wx still owns and later deletes the
+# C++ object regardless of when the Perl wrapper itself gets GC'd. Only
+# event classes whose DESTROY actually honours the deleteable flag are safe
+# to pass here - wxPlThreadEvent is (see below); e.g. plain wxCommandEvent
+# currently is not (inherits wxEvent::DESTROY above, which always deletes).
+void
+wxQueueEvent( evthnd, event )
+    wxEvtHandler* evthnd
+    wxEvent* event
+  CODE:
+    wxPli_object_set_deleteable( aTHX_ ST(1), false );
+    wxQueueEvent( evthnd, event );
+
 MODULE=Wx_Evt PACKAGE=Wx::Event
 
 # unimplemented ( and probably will never be: problems with object
@@ -240,6 +269,24 @@ wxPlThreadEvent::new( type, id, data )
   CODE:
     RETVAL = new wxPlThreadEvent( aTHX_ CLASS, type, id, data );
   OUTPUT: RETVAL
+
+## // thread OK
+##
+## wxEvent::DESTROY (above, inherited by every event class that doesn't
+## override it) always deletes THIS unconditionally - fine as long as the
+## event is only ever posted via wxPostEvent() (App.xs), which clones and
+## leaves the original Perl-owned object alone. wxQueueEvent() (this file)
+## hands the actual object to wx and marks it non-deleteable on the Perl
+## side; without this override, this class would still unconditionally
+## delete it a second time here once the Perl wrapper is garbage collected -
+## a double free. Mirrors wxPlEvent::DESTROY / wxPlCommandEvent::DESTROY
+## above, which solve the same problem for their own ownership-transfer case.
+void
+wxPlThreadEvent::DESTROY()
+  CODE:
+    wxPli_thread_sv_unregister( aTHX_ "Wx::PlThreadEvent", THIS, ST(0) );
+    if( THIS && wxPli_object_is_deleteable( aTHX_ ST(0) ) )
+        delete THIS;
 
 int
 wxPlThreadEvent::_GetData()

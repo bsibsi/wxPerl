@@ -6,6 +6,9 @@
 *.pdb
 *.def
 *.res
+*.DS_Store
+MYMETA.json
+MYMETA.yml
 Makefile
 Makefile.old
 Opt
