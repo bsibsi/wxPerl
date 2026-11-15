@@ -41,6 +41,9 @@ wxVideoMode::CLONE()
     int GetWidth() const;
     int GetHeight() const;
     int GetDepth() const;
+#if WXPERL_W_VERSION_GE( 3, 0, 0 )
+    int GetRefresh() const;
+#endif
     bool IsOk() const;
 };
 
@@ -94,6 +97,28 @@ GetFromWindow( window )
 #endif
     wxString GetName() const;
     bool IsPrimary() const;
+
+#if WXPERL_W_VERSION_GE( 3, 1, 5 )
+    int GetDepth() const;
+    wxSize GetPPI() const;
+    double GetScaleFactor() const;
+%{
+int
+GetStdPPIValue()
+  CODE:
+    RETVAL = wxDisplay::GetStdPPIValue();
+  OUTPUT: RETVAL
+
+wxSize*
+GetStdPPI()
+  CODE:
+    RETVAL = new wxSize( wxDisplay::GetStdPPI() );
+  OUTPUT: RETVAL
+%}
+#endif
+#if WXPERL_W_VERSION_GE( 3, 3, 0 )
+    wxSize GetRawPPI() const;
+#endif
 
 #if wxUSE_DISPLAY
 %{
